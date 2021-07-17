@@ -21,4 +21,9 @@ book_train = book_train_1.groupby(['time_id']).agg(avg_bid_price1=('bid_price1',
                                                    sum_ask_size1=('ask_size1', 'sum'),
                                                    sum_bid_size2=('bid_size1', 'sum'),
                                                    sum_ask_size2=('ask_size1', 'sum'))
-print(book_train)
+
+trade_train = trade_train_1.groupby(['time_id']).agg(avg_price=('price', 'mean'),
+                                                     sum_size=('size', 'sum'),
+                                                     sum_order_count=('order_count', 'sum'))
+
+feature = pd.concat([book_train, trade_train])
