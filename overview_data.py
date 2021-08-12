@@ -2,12 +2,16 @@ import numpy as np
 import pandas as pd
 import os
 
-# for dirname, _, filenames in os.walk('../data'):
-#     for filename in filenames:
-#         print(dirname)
-#         print(os.path.join(dirname, filename))
 
-def data_trans(path_1, path_2, id):
+def data_trans(id):
+    for dirname, _, filenames in os.walk('../data/book_train.parquet/stock_id='+str(id)):
+        for filename in filenames:
+            path_1 = os.path.join(dirname, filename)
+
+    for dirname, _, filenames in os.walk('../data/trade_train.parquet/stock_id='+str(id)):
+        for filename in filenames:
+            path_2 = os.path.join(dirname, filename)
+
     book_train_1 = pd.read_parquet(path_1, engine='pyarrow')
     trade_train_1 = pd.read_parquet(path_2, engine='pyarrow')
 
@@ -27,11 +31,9 @@ def data_trans(path_1, path_2, id):
     feature = pd.merge(book_train, trade_train, on='stock_id')
     return feature
 
+
 train_data = pd.read_csv('../data/train.csv')
-
-# book_train_1 = pd.read_parquet('../data/book_train.parquet/stock_id=0/c439ef22282f412ba39e9137a3fdabac.parquet', engine='pyarrow')
-# trade_train_1 = pd.read_parquet('../data/trade_train.parquet/stock_id=0/ef805fd82ff54fadb363094e3b122ab9.parquet', engine='pyarrow')
-
 stock = np.unique(train_data.stock_id)
 
 for i in stock:
+    print(data_trans(i))
