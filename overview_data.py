@@ -34,6 +34,9 @@ def data_trans(id):
 
 train_data = pd.read_csv('../data/train.csv')
 stock = np.unique(train_data.stock_id)
-
+columns = ['avg_bid_price1', 'avg_ask_price1', 'avg_bid_price2', 'avg_ask_price2',
+           'sum_bid_size1', 'sum_ask_size1', 'sum_bid_size2', 'sum_ask_size2',
+           'stock_id', 'avg_price', 'sum_size', 'sum_order_count']
+train_feature = pd.DataFrame(columns=columns, dtype=object)
 for i in stock:
-    print(data_trans(i))
+    train_feature = pd.concat([train_feature, data_trans(i)], axis=0, ignore_index=True)
