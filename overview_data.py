@@ -40,3 +40,7 @@ columns = ['avg_bid_price1', 'avg_ask_price1', 'avg_bid_price2', 'avg_ask_price2
 train_feature = pd.DataFrame(columns=columns, dtype=object)
 for i in stock:
     train_feature = pd.concat([train_feature, data_trans(i)], axis=0, ignore_index=True)
+train_data['stock_id'] = train_data['stock_id'].astype(str) + str('_') + train_data['time_id'].astype(str)
+
+feature_with_label = pd.merge(train_feature, train_data, on='stock_id')
+feature_with_label.to_csv("train_data.csv", index=False)
