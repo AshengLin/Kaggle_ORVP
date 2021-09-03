@@ -1,15 +1,25 @@
 import tensorflow as tf
 from tensorflow import keras
 import numpy as np
+import pandas as pd
 
-data_x = np.random.normal(size=[1000, 1])
-noise = np.random.normal(size=[1000, 1]) * 0.2
-data_y = data_x * 3. + 2. + noise
+train_data = pd.read_csv('./train_data.csv')
 
-train_x, train_y = data_x[:900], data_y[:900]
-test_x, test_y = data_x[900:], data_y[900:]
+# data_x = np.random.normal(size=[1000, 1])
+# noise = np.random.normal(size=[1000, 1]) * 0.2
+# data_y = data_x * 3. + 2. + noise
+#
+# train_x, train_y = data_x[:900], data_y[:900]
+# test_x, test_y = data_x[900:], data_y[900:]
 
-f1 = keras.models.Sequential([keras.layers.Dense(10, input_dim=1)], name="f1")
+data_x = train_data.loc[:, train_data.columns != 'target']
+data_y = train_data.loc[:, train_data.columns == 'target']
+
+train_x, train_y = data_x[:400000], data_y[:400000]
+test_x, test_y = data_x[400000:], data_y[400000:]
+
+
+f1 = keras.models.Sequential([keras.layers.Dense(10, input_dim=13)], name="f1")
 f2 = keras.models.Sequential([keras.layers.Dense(10, input_dim=10)], name="f2")
 f3 = keras.models.Sequential([keras.layers.Dense(1, input_dim=10)], name="f3")
 g3 = keras.models.Sequential([keras.layers.Dense(10, input_dim=1)], name="g3")
