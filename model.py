@@ -5,17 +5,18 @@ import pandas as pd
 
 train_data = pd.read_csv('./train_data.csv')
 
-data_x = train_data.loc[:, train_data.columns != 'target']
+data_x = train_data.loc[:, [a for a in train_data.columns if a not in ['time_id', 'target', 'stock_id']]]
 data_y = train_data.loc[:, train_data.columns == 'target']
+data_y['target'].astype('float64')
 
 train_x, train_y = data_x[:400000], data_y[:400000]
 test_x, test_y = data_x[400000:], data_y[400000:]
 
 
-f1 = keras.models.Sequential([keras.layers.Dense(10, input_dim=13)], name="f1")
+f1 = keras.models.Sequential([keras.layers.Dense(10, input_dim=11)], name="f1")
 f2 = keras.models.Sequential([keras.layers.Dense(10, input_dim=10)], name="f2")
 f3 = keras.models.Sequential([keras.layers.Dense(1, input_dim=10)], name="f3")
-g3 = keras.models.Sequential([keras.layers.Dense(10, input_dim=13)], name="g3")
+g3 = keras.models.Sequential([keras.layers.Dense(10, input_dim=11)], name="g3")
 g2 = keras.models.Sequential([keras.layers.Dense(10, input_dim=10)], name="g2")
 
 
@@ -33,8 +34,7 @@ def pred(x):
 
 
 for t in range(100):
-    bi = np.random.randint(0, len(train_x), 12)
-    bx, by = train_x[bi], train_y[bi]
+    bx, by = train_x, train_y
     with tf.GradientTape(persistent=True) as tape:
         h1 = f1(bx)
         h2 = f2(h1)
