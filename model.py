@@ -9,9 +9,16 @@ data_x = train_data.loc[:, [a for a in train_data.columns if a not in ['time_id'
 data_y = train_data.loc[:, train_data.columns == 'target']
 data_y['target'].astype('float64')
 
+data_x = data_x.transpose()
+data_y = data_y.transpose()
 train_x, train_y = data_x[:400000], data_y[:400000]
 test_x, test_y = data_x[400000:], data_y[400000:]
 
+print(type(test_x))
+
+
+
+print(type(test_x))
 
 f1 = keras.models.Sequential([keras.layers.Dense(10, input_dim=11)], name="f1")
 f2 = keras.models.Sequential([keras.layers.Dense(10, input_dim=10)], name="f2")
