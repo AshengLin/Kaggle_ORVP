@@ -9,59 +9,73 @@ data_x = train_data.loc[:, [a for a in train_data.columns if a not in ['time_id'
 data_y = train_data.loc[:, train_data.columns == 'target']
 data_y['target'].astype('float64')
 
-data_x = data_x.transpose()
-data_y = data_y.transpose()
+
 train_x, train_y = data_x[:400000], data_y[:400000]
 test_x, test_y = data_x[400000:], data_y[400000:]
 
-f1 = keras.models.Sequential([keras.layers.Dense(10, input_dim=11)], name="f1")
-f2 = keras.models.Sequential([keras.layers.Dense(10, input_dim=10)], name="f2")
-f3 = keras.models.Sequential([keras.layers.Dense(1, input_dim=10)], name="f3")
-g3 = keras.models.Sequential([keras.layers.Dense(10, input_dim=11)], name="g3")
-g2 = keras.models.Sequential([keras.layers.Dense(10, input_dim=10)], name="g2")
+# f1 = keras.models.Sequential([keras.layers.Dense(10, input_dim=11)], name="f1")
+# f2 = keras.models.Sequential([keras.layers.Dense(10, input_dim=10)], name="f2")
+# f3 = keras.models.Sequential([keras.layers.Dense(1, input_dim=10)], name="f3")
+# g3 = keras.models.Sequential([keras.layers.Dense(10, input_dim=11)], name="g3")
+# g2 = keras.models.Sequential([keras.layers.Dense(10, input_dim=10)], name="g2")
+#
+#
+# def hidden_target(h, gh, gt):
+#     _t = h - gh + gt
+#     return _t
+#
+#
+# opt = keras.optimizers.SGD(0.01)
+# mse = keras.losses.MeanSquaredError()
+#
+#
+# @pysnooper.snoop()
+# def pred(x):
+#     return f3(f2(f1(x)))
+#
+#
+# for t in range(100):
+#     bx, by = train_x, train_y
+#     with tf.GradientTape(persistent=True) as tape:
+#         h1 = f1(bx)
+#         h2 = f2(h1)
+#         h3 = f3(h2)
+#
+#         g3h3 = g3(h3)
+#         g2h2 = g2(h2)
+#         t3 = by
+#         t2 = hidden_target(h2, g3h3, g3(t3))
+#         t1 = hidden_target(h1, g2h2, g2(t2))
+#
+#         e3 = mse(t3, h3)
+#         e2 = mse(t2, h2)
+#         e1 = mse(t1, h1)
+#
+#         eb3 = mse(h2, g3h3)
+#         eb2 = mse(h1, g2h2)
+#         print(e3.numpy())
+#
+#     grad_f3 = tape.gradient(e3, f3.trainable_variables)
+#     grad_f2 = tape.gradient(e2, f2.trainable_variables)
+#     grad_f1 = tape.gradient(e1, f1.trainable_variables)
+#
+#     grad_g3 = tape.gradient(eb3, g3.trainable_variables)
+#     grad_g2 = tape.gradient(eb2, g2.trainable_variables)
+#
+#     for grad, n in zip([grad_f1, grad_f2, grad_f3, grad_g2, grad_g3], [f1, f2, f3, g2, g3]):
+#         opt.apply_gradients(zip(grad, n.trainable_variables))\
 
+model = tf.keras.models.Sequential([
+  tf.keras.layers.Flatten(input_shape=(11,)),
+  tf.keras.layers.Dense(10, activation='relu'),
+  tf.keras.layers.Dropout(0.2),
+  tf.keras.layers.Dense(5, activation='relu'),
+  tf.keras.layers.Dense(1, activation='relu')
+])
 
-def hidden_target(h, gh, gt):
-    _t = h - gh + gt
-    return _t
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
 
-
-opt = keras.optimizers.SGD(0.01)
-mse = keras.losses.MeanSquaredError()
-
-
-@pysnooper.snoop()
-def pred(x):
-    return f3(f2(f1(x)))
-
-
-for t in range(100):
-    bx, by = train_x, train_y
-    with tf.GradientTape(persistent=True) as tape:
-        h1 = f1(bx)
-        h2 = f2(h1)
-        h3 = f3(h2)
-
-        g3h3 = g3(h3)
-        g2h2 = g2(h2)
-        t3 = by
-        t2 = hidden_target(h2, g3h3, g3(t3))
-        t1 = hidden_target(h1, g2h2, g2(t2))
-
-        e3 = mse(t3, h3)
-        e2 = mse(t2, h2)
-        e1 = mse(t1, h1)
-
-        eb3 = mse(h2, g3h3)
-        eb2 = mse(h1, g2h2)
-        print(e3.numpy())
-
-    grad_f3 = tape.gradient(e3, f3.trainable_variables)
-    grad_f2 = tape.gradient(e2, f2.trainable_variables)
-    grad_f1 = tape.gradient(e1, f1.trainable_variables)
-
-    grad_g3 = tape.gradient(eb3, g3.trainable_variables)
-    grad_g2 = tape.gradient(eb2, g2.trainable_variables)
-
-    for grad, n in zip([grad_f1, grad_f2, grad_f3, grad_g2, grad_g3], [f1, f2, f3, g2, g3]):
-        opt.apply_gradients(zip(grad, n.trainable_variables))
+model.fit(train_x, train_y, epochs=20)
+model.evaluate(test_x, test_y)
