@@ -27,3 +27,6 @@ model.compile(optimizer=adam,
 
 model.fit(train_x, train_y, epochs=20)
 model.evaluate(test_x, test_y)
+
+model.predict(test_x, batch_size=None, verbose=0, steps=None, callbacks=None, max_queue_size=10,
+              workers=1, use_multiprocessing=False)
