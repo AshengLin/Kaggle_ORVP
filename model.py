@@ -17,16 +17,16 @@ model = tf.keras.models.Sequential([
   tf.keras.layers.Flatten(input_shape=(11,)),
   tf.keras.layers.Dense(10, activation='relu'),
   tf.keras.layers.Dropout(0.2),
-  tf.keras.layers.Dense(5, activation='relu'),
-  tf.keras.layers.Dense(1, activation='relu')
+  tf.keras.layers.Dense(5, activation='tanh'),
+  tf.keras.layers.Dense(1, activation='tanh')
 ])
 
-adam = keras.optimizers.Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
+adam = keras.optimizers.Adam(lr=0.00001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
 model.compile(optimizer=adam,
               loss='mean_squared_error')
 
-model.fit(train_x, train_y, epochs=20)
+model.fit(train_x, train_y, epochs=100)
 model.evaluate(test_x, test_y)
 
-model.predict(test_x, batch_size=None, verbose=0, steps=None, callbacks=None, max_queue_size=10,
-              workers=1, use_multiprocessing=False)
+pred = model.predict(test_x)
+
