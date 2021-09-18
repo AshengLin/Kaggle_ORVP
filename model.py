@@ -17,6 +17,7 @@ model = tf.keras.models.Sequential([
   tf.keras.layers.Flatten(input_shape=(11,)),
   tf.keras.layers.Dense(10, activation='relu'),
   tf.keras.layers.Dense(7, activation='relu'),
+  tf.keras.layers.Dense(6, activation='relu'),
   # tf.keras.layers.Dropout(0.2),
   tf.keras.layers.Dense(5, activation='tanh'),
   tf.keras.layers.Dense(3, activation='tanh'),
@@ -30,6 +31,6 @@ model.compile(optimizer=adam,
 model.fit(train_x, train_y, epochs=100)
 model.evaluate(test_x, test_y)
 
-pred = model.predict(test_x)
+pred = model.predict(train_x)
 print(pred)
 
